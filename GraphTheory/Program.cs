@@ -13,16 +13,18 @@ namespace graph_theory
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Exercise 1:\n");
+            Console.WriteLine("Exercise 1:");
             AdjacencyMatrixBiz adjacencyMatrixBiz = new AdjacencyMatrixBiz();
             adjacencyMatrixBiz.AdjacencyMatrixHandling(ADJACENCY_MATRIX_FILE_PATH);
+            Console.WriteLine();
 
-            Console.WriteLine("Exercise 2:\n");
+            Console.WriteLine("Exercise 2:");
             AdjacencyListBiz adjacencyListBiz = new AdjacencyListBiz();
             adjacencyListBiz.AdjacencyListHandling(ADJACENCY_LIST_FILE_PATH);
+            Console.WriteLine();
 
-            Console.WriteLine("Exercise 3:\n");
-            if(adjacencyMatrixBiz.AdjacencyMatrix != null)
+            Console.WriteLine("Exercise 3: There is console result.\n Please also check the result by the following path: GraphTheory\\bin\\Debug\\net5.0\\Source\\Result\\adjacency-list.txt");
+            if (adjacencyMatrixBiz.AdjacencyMatrix != null)
             {
                 var al = adjacencyMatrixBiz.ConvertToAdjacencyList(adjacencyMatrixBiz.AdjacencyMatrix);
                 adjacencyListBiz.AdjacencyList = al;
@@ -33,8 +35,11 @@ namespace graph_theory
             {
                 Console.WriteLine("Cannot convert AM to AL.");
             }
-           
-            Console.WriteLine("Exercise 4:\n");
+
+            Console.WriteLine();
+
+            var message = $"Exercise 4: There is console result.\n Please also check the result by the following path: GraphTheory\\bin\\Debug\\net5.0\\Source\\Result\\adjacency-matrix.txt";
+            Console.WriteLine(message);
             if (adjacencyListBiz.AdjacencyList != null)
             {
                 var am = adjacencyListBiz.ConvertToAdjacencyMatrix(adjacencyListBiz.AdjacencyList);

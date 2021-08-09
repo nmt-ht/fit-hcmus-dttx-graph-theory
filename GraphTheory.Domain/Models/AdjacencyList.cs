@@ -4,7 +4,7 @@ namespace GraphTheory.Domain.Models
 {
     /// <summary>
     /// Reference: https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.linkedlist-1?view=net-5.0
-    /// We can use List/Array instead. However, LinkedList may get more invenience in the future for this exercise.
+    /// We can use List/Array instead. However, LinkedList may get more convenience in the future for this exercise.
     /// </summary>
     public class AdjacencyList
     {

@@ -103,8 +103,6 @@ namespace GraphTheory.Domain.Handlers
 
                 Console.WriteLine("");
             }
-            
-            Console.WriteLine("\n");
         }
 
         public AdjacencyList ConvertToAdjacencyList(AdjacencyMatrix am)

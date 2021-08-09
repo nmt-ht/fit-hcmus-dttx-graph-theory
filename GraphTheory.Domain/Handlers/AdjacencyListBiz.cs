@@ -96,30 +96,6 @@ namespace GraphTheory.Domain.Handlers
             return new AdjacencyMatrix(n, a);
         }
 
-        public AdjacencyMatrix AdjacencyMatrix(AdjacencyList al)
-        {
-            int n = al.N;
-            int[,] a = new int[n, n];
-
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    int value = 0;
-                    var node = al.AdjacentVertices[i].Find(j);
-
-                    if (node != null)
-                    {
-                        value = 1;
-                    }
-
-                    a[i, j] = value;
-                }
-            }
-
-            return new AdjacencyMatrix(n, a);
-        }
-
         public void PrintToScreen()
         {
             Console.WriteLine(AdjacencyList.N);
@@ -136,8 +112,6 @@ namespace GraphTheory.Domain.Handlers
 
                 Console.WriteLine();
             }
-
-            Console.WriteLine("\n");
         }
 
         public bool IsUndirectedGraph()
