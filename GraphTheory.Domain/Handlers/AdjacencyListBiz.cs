@@ -6,6 +6,8 @@ namespace GraphTheory.Domain.Handlers
 {
     /// <summary>
     /// Read matrix from the file, check sysmmetric and print to consonle app
+    /// Reference: https://theoryofprogramming.wordpress.com/2014/12/24/graph-theory-basics/
+    /// https://theoryofprogramming.wordpress.com/adjacency-list-in-c-sharp/
     /// </summary>
     public class AdjacencyListBiz
     {
