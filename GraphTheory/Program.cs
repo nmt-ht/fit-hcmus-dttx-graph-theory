@@ -18,39 +18,39 @@ namespace graph_theory
             adjacencyMatrixBiz.AdjacencyMatrixHandling(ADJACENCY_MATRIX_FILE_PATH);
             Console.WriteLine();
 
-            Console.WriteLine("Exercise 2:");
-            AdjacencyListBiz adjacencyListBiz = new AdjacencyListBiz();
-            adjacencyListBiz.AdjacencyListHandling(ADJACENCY_LIST_FILE_PATH);
-            Console.WriteLine();
+            //Console.WriteLine("Exercise 2:");
+            //AdjacencyListBiz adjacencyListBiz = new AdjacencyListBiz();
+            //adjacencyListBiz.AdjacencyListHandling(ADJACENCY_LIST_FILE_PATH);
+            //Console.WriteLine();
 
-            Console.WriteLine("Exercise 3: There is console result.\n Please also check the result by the following path: GraphTheory\\bin\\Debug\\net5.0\\Source\\Result\\adjacency-list.txt");
-            if (adjacencyMatrixBiz.AdjacencyMatrix != null)
-            {
-                var al = adjacencyMatrixBiz.ConvertToAdjacencyList(adjacencyMatrixBiz.AdjacencyMatrix);
-                adjacencyListBiz.AdjacencyList = al;
-                adjacencyListBiz.PrintToScreen();
-                adjacencyMatrixBiz.WriteToFile(ADJACENCY_LIST_FILE_PATH_RESULT, al);
-            }
-            else
-            {
-                Console.WriteLine("Cannot convert AM to AL.");
-            }
+            //Console.WriteLine("Exercise 3: There is console result.\n Please also check the result by the following path: GraphTheory\\bin\\Debug\\net5.0\\Source\\Result\\adjacency-list.txt");
+            //if (adjacencyMatrixBiz.AdjacencyMatrix != null)
+            //{
+            //    var al = adjacencyMatrixBiz.ConvertToAdjacencyList(adjacencyMatrixBiz.AdjacencyMatrix);
+            //    adjacencyListBiz.AdjacencyList = al;
+            //    adjacencyListBiz.PrintToScreen();
+            //    adjacencyMatrixBiz.WriteToFile(ADJACENCY_LIST_FILE_PATH_RESULT, al);
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Cannot convert AM to AL.");
+            //}
 
-            Console.WriteLine();
+            //Console.WriteLine();
 
-            var message = $"Exercise 4: There is console result.\n Please also check the result by the following path: GraphTheory\\bin\\Debug\\net5.0\\Source\\Result\\adjacency-matrix.txt";
-            Console.WriteLine(message);
-            if (adjacencyListBiz.AdjacencyList != null)
-            {
-                var am = adjacencyListBiz.ConvertToAdjacencyMatrix(adjacencyListBiz.AdjacencyList);
-                adjacencyMatrixBiz.AdjacencyMatrix = am;
-                adjacencyMatrixBiz.PrintToScreen();
-                adjacencyListBiz.WriteToFile(ADJACENCY_MATRIX_FILE_PATH_RESULT, am);
-            }
-            else
-            {
-                Console.WriteLine("Cannot convert AL to AM.");
-            }
+            //var message = $"Exercise 4: There is console result.\n Please also check the result by the following path: GraphTheory\\bin\\Debug\\net5.0\\Source\\Result\\adjacency-matrix.txt";
+            //Console.WriteLine(message);
+            //if (adjacencyListBiz.AdjacencyList != null)
+            //{
+            //    var am = adjacencyListBiz.ConvertToAdjacencyMatrix(adjacencyListBiz.AdjacencyList);
+            //    adjacencyMatrixBiz.AdjacencyMatrix = am;
+            //    adjacencyMatrixBiz.PrintToScreen();
+            //    adjacencyListBiz.WriteToFile(ADJACENCY_MATRIX_FILE_PATH_RESULT, am);
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Cannot convert AL to AM.");
+            //}
 
             Console.ReadLine();
         }
