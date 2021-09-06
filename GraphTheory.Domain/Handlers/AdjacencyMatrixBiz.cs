@@ -16,11 +16,19 @@ namespace GraphTheory.Domain.Handlers
         private const string ASYMMETRIC_MATRIX = "Ma tran khong doi xung.";
         private const string DIRECTED_GRAPH = "Do thi co huong.";
         private const string UNDIRECTED_GRAPH = "Do thi vo huong.";
+        private const string COMPLETED_GRAPH = "Day la do thi day du K{0}";
+        private const string UNCOMPLETED_GRAPH = "Day la khong do thi day du";
 
         public AdjacencyMatrix AdjacencyMatrix { get; set; }
         private int LoopEdges { get; set; } = 0;
         private int TotalOfEdges { get; set; } = 0;
-
+        public int[] DegreeArray { get; set; }
+        private int TotalOfDegrees { get; set; } = 0;
+        private eExerciseNumber ExerciseNumber { get; set; }
+        public void SetParametter(eExerciseNumber exerciseNumber)
+        {
+            this.ExerciseNumber = exerciseNumber;
+        }
         public void AdjacencyMatrixHandling(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
@@ -47,10 +55,27 @@ namespace GraphTheory.Domain.Handlers
             }
 
             PrintToScreen();
-            Console.WriteLine(IsUndirectedGraph() ? UNDIRECTED_GRAPH : DIRECTED_GRAPH);
-            
-            if(!this.IsUndirectedGraph())
-                PrintInfo4DirecredGraph();
+
+            switch (this.ExerciseNumber)
+            {
+                case eExerciseNumber.One:
+                    Console.WriteLine(IsUndirectedGraph() ? UNDIRECTED_GRAPH : DIRECTED_GRAPH);
+
+                    if (!this.IsUndirectedGraph())
+                        PrintInfo4DirecredGraph();
+                    else
+                        PrintInfo4UnDirecredGraph();
+
+                    break;
+                case eExerciseNumber.Two:
+                    Console.WriteLine(IsCompeletedGraph() ? string.Format(COMPLETED_GRAPH, this.AdjacencyMatrix.N) : UNCOMPLETED_GRAPH);
+
+                    if (IsRegularGraph())
+                        Console.WriteLine($"Day la do thi chinh qui {this.DegreeArray[0]}-chinh quy");
+
+                    Console.WriteLine(IsCycleGraph() ? $"Day la do thi vong C{this.AdjacencyMatrix.N}" : "Day khong phai la do thi vong");
+                    break;
+            }
         }
 
         public AdjacencyMatrix InitAdjacencyMatrix(string filePath)
@@ -81,22 +106,6 @@ namespace GraphTheory.Domain.Handlers
             }
 
             return null;
-        }
-
-        public bool IsUndirectedGraph()
-        {
-            var isSymmetric = true;
-
-            for (int i = 0; i < AdjacencyMatrix.N; i++)
-            {
-                for (int j = 0; j < AdjacencyMatrix.N; j++)
-                {
-                    if (AdjacencyMatrix.Array[i, j] != AdjacencyMatrix.Array[j, i])
-                        return false;
-                }
-            }
-
-            return isSymmetric;
         }
 
         public void PrintToScreen()
@@ -165,9 +174,26 @@ namespace GraphTheory.Domain.Handlers
             }
         }
 
+        #region Dirrected Graph
+        public bool IsUndirectedGraph()
+        {
+            var isSymmetric = true;
+
+            for (int i = 0; i < AdjacencyMatrix.N; i++)
+            {
+                for (int j = 0; j < AdjacencyMatrix.N; j++)
+                {
+                    if (AdjacencyMatrix.Array[i, j] != AdjacencyMatrix.Array[j, i])
+                        return false;
+                }
+            }
+
+            return isSymmetric;
+        }
+
         private int[] CountDegrees()
         {
-            int[] degrees = new int[this.AdjacencyMatrix.N]; // Mảng chứa bậc của các đỉnh
+            int[] degrees = new int[this.AdjacencyMatrix.N];
             for (int i = 0; i < AdjacencyMatrix.N; i++)
             {
                 int count = 0;
@@ -176,7 +202,10 @@ namespace GraphTheory.Domain.Handlers
                     {
                         count += AdjacencyMatrix.Array[i, j];
                         if (i == j) // xet truong hop canh khuyen
+                        {
                             count += AdjacencyMatrix.Array[i, i];
+                            this.LoopEdges++;
+                        }
                     }
                 degrees[i] = count;
             }
@@ -201,7 +230,7 @@ namespace GraphTheory.Domain.Handlers
                     {
                         count++;
                         if (i == j) //Canh khuyen
-                        { 
+                        {
                             count++;
                             LoopEdges++;
                         }
@@ -250,7 +279,7 @@ namespace GraphTheory.Domain.Handlers
             }
 
             Console.WriteLine($"Bac vao - bac ra cua tung dinh:\n {inOutDegStr}");
-            Console.WriteLine($"Phan loai do thi: {EnumExtensionMethods.GetEnumDescription((TypeOfGraph()))}");
+            Console.WriteLine($"Phan loai do thi: {EnumExtensionMethods.GetEnumDescription((GetTypeOfGraph()))}");
         }
 
         private int HangingTop(int[] inDeg, int[] outDeg)
@@ -258,17 +287,28 @@ namespace GraphTheory.Domain.Handlers
             var result = 0;
             if (!IsUndirectedGraph())
             {
-                for(int i= 0; i < outDeg.Length; i++)
+                for (int i = 0; i < outDeg.Length; i++)
                 {
                     for (int j = 0; j < inDeg.Length; j++)
                     {
-                        if(i == j)
+                        if (i == j)
                         {
                             var totalDeg = inDeg[j] + outDeg[i];
                             result += totalDeg == 1 ? 1 : 0;
                             break;
                         }
                     }
+                }
+            }
+            else
+            {
+                if (this.DegreeArray.Length == 0)
+                    return 0;
+
+                for (int i = 0; i < this.DegreeArray.Length; i++)
+                {
+                    if (DegreeArray[i] == 1)
+                        result++;
                 }
             }
 
@@ -281,10 +321,10 @@ namespace GraphTheory.Domain.Handlers
 
             if (IsUndirectedGraph())
             {
-                for(int i = 0; i < this.AdjacencyMatrix.N; i++)
+                for (int i = 0; i < this.AdjacencyMatrix.N; i++)
                 {
-                    for(int j = i+1; j < this.AdjacencyMatrix.N; j++)
-                        count = this.AdjacencyMatrix.Array[i, j] > 1 ? 1 : 0;
+                    for (int j = i + 1; j < this.AdjacencyMatrix.N; j++)
+                        count += this.AdjacencyMatrix.Array[i, j] > 1 ? 1 : 0;
                 }
             }
             else
@@ -292,8 +332,8 @@ namespace GraphTheory.Domain.Handlers
                 for (int i = 0; i < this.AdjacencyMatrix.N; i++)
                 {
                     for (int j = i + 1; j < this.AdjacencyMatrix.N; j++)
-                        count = (this.AdjacencyMatrix.Array[i, j] > 1 
-                            || this.AdjacencyMatrix.Array[j,i] > 1) ? 1 : 0;
+                        count += (this.AdjacencyMatrix.Array[i, j] > 1
+                            || this.AdjacencyMatrix.Array[j, i] > 1) ? 1 : 0;
                 }
             }
 
@@ -323,12 +363,14 @@ namespace GraphTheory.Domain.Handlers
             return true;
         }
 
-        private eTypeOfGraph TypeOfGraph()
+        private eTypeOfGraph GetTypeOfGraph()
         {
             if (IsUndirectedGraph())
             {
-                if (this.CountMultipleEdge() > 0)
+                if (this.CountMultipleEdge() > 0 && !this.IsGraphHasNoLoops())
                     return eTypeOfGraph.MultiGraph;
+
+                return eTypeOfGraph.PseudoGraph;
             }
             else
             {
@@ -337,9 +379,102 @@ namespace GraphTheory.Domain.Handlers
 
                 return eTypeOfGraph.DirectedGraph;
             }
-
-            return eTypeOfGraph.Unknown;
         }
+
+        private void PrintInfo4UnDirecredGraph()
+        {
+            Console.WriteLine($"So dinh cua do thi: {this.AdjacencyMatrix.N}");
+            GetTotalOfEdges();
+            Console.WriteLine($"So canh cua do thi: {this.TotalOfEdges}");
+            Console.WriteLine($"So cap dinh xuat hien canh boi: {this.CountMultipleEdge()}");
+            Console.WriteLine($"So canh khuyen: {this.LoopEdges}");
+            Console.WriteLine($"So dinh treo: {HangingTop(null, null)}");
+            Console.WriteLine($"So dinh co lap: {CountIsolatedVertices(this.DegreeArray)}");
+
+            var degreeOfEdge = string.Empty;
+
+            for (int i = 0; i < this.DegreeArray.Length; i++)
+            {
+                degreeOfEdge += string.Format($"{i}({this.DegreeArray[i]})") + " ";
+            }
+
+            Console.WriteLine($"Bac cua tung dinh:\n {degreeOfEdge}");
+            Console.WriteLine($"Phan loai do thi: {EnumExtensionMethods.GetEnumDescription((GetTypeOfGraph()))}");
+        }
+
+        private void GetTotalOfEdges()
+        {
+            this.DegreeArray = CountDegrees();
+
+            if (this.DegreeArray.Length == 0)
+                return;
+
+            for (int i = 0; i < this.DegreeArray.Length; i++)
+            {
+                this.TotalOfDegrees += this.DegreeArray[i];
+            }
+
+            this.TotalOfEdges = this.TotalOfDegrees / 2;
+        }
+        #endregion
+
+        #region Completed Graph
+        //Total number of edges in a complete graph of N vertices = (n*(n–1))/2. n are nodes of graph.
+        private int TotalOfEdges4CompletedGraph()
+        {
+            int n = this.AdjacencyMatrix.N;
+
+            return n * (n - 1) / 2;
+        }
+
+        private bool IsCompeletedGraph()
+        {
+            var result = false;
+            this.DegreeArray = CountDegrees();
+
+            if (this.DegreeArray.Length == 0)
+                return false;
+
+            for (int i = 0; i < this.DegreeArray.Length; i++)
+            {
+                this.TotalOfDegrees += this.DegreeArray[i];
+            }
+
+            if ((this.TotalOfDegrees / 2) == TotalOfEdges4CompletedGraph())
+                result = true;
+
+            return result;
+        }
+
+        private bool IsRegularGraph()
+        {
+            var result = true;
+
+            if (this.DegreeArray == null)
+                return false;
+
+            for (int i = 0; i < this.DegreeArray.Length; i++)
+            {
+                for (int j = i + 1; j < this.DegreeArray.Length; j++)
+                {
+                    if (this.DegreeArray[i] != this.DegreeArray[j])
+                        return false;
+                }
+            }
+
+            return result;
+        }
+
+
+        //https://www.geeksforgeeks.org/detect-cycle-undirected-graph/
+        private bool IsCycleGraph()
+        {
+            if (this.AdjacencyMatrix == null || this.AdjacencyMatrix.N < 3 || !IsRegularGraph())
+                return false;
+
+            return true;
+        }
+        #endregion
     }
 }
 
@@ -359,4 +494,11 @@ public enum eTypeOfGraph
     UndirectedGraph = 5,
     [Description("Da do thi co huong")]
     MultiDirectedGraph = 5
+}
+
+
+public enum eExerciseNumber
+{
+    One = 1,
+    Two = 2
 }

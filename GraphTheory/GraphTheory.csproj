@@ -17,6 +17,9 @@
     <None Update="Source\adjacency-matrix.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Source\input-2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Source\Result\adjacency-list.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
