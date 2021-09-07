@@ -8,6 +8,7 @@ namespace GraphTheory.Domain.Handlers
 {
     /// <summary>
     /// Read matrix from the file, check sysmmetric and print to consonle app
+    /// reference: checking the graph is cycle - https://www.geeksforgeeks.org/detect-cycle-undirected-graph/
     /// </summary>
     public class AdjacencyMatrixBiz
     {
