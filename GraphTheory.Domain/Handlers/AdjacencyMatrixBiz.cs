@@ -20,6 +20,7 @@ namespace GraphTheory.Domain.Handlers
         private const string UNCOMPLETED_GRAPH = "Day la khong do thi day du";
 
         public AdjacencyMatrix AdjacencyMatrix { get; set; }
+        private AdjacencyList AdjacencyList { get; set; }
         private int LoopEdges { get; set; } = 0;
         private int TotalOfEdges { get; set; } = 0;
         public int[] DegreeArray { get; set; }
@@ -465,14 +466,49 @@ namespace GraphTheory.Domain.Handlers
             return result;
         }
 
+        private bool IsCyclicUtil(int v, bool[] visited, int parent)
+        {
+            visited[v] = true;
 
-        //https://www.geeksforgeeks.org/detect-cycle-undirected-graph/
+            foreach (int i in this.AdjacencyList.AdjacentVertices[v])
+            {
+                if (!visited[i])
+                {
+                    if (IsCyclicUtil(i, visited, v))
+                        return true;
+                }
+
+                // If an adjacent is visited and
+                // not parent of current vertex,
+                // then there is a cycle.
+                else if (i != parent)
+                    return true;
+            }
+            return false;
+        }
+
         private bool IsCycleGraph()
         {
-            if (this.AdjacencyMatrix == null || this.AdjacencyMatrix.N < 3 || !IsRegularGraph())
+            if (this.AdjacencyMatrix == null || this.AdjacencyMatrix.N < 3 || !IsRegularGraph() || (this.DegreeArray.Length > 0 && this.DegreeArray[0] != 2))
                 return false;
 
-            return true;
+            this.AdjacencyList = ConvertToAdjacencyList(this.AdjacencyMatrix);
+            
+            bool[] visited = new bool[this.AdjacencyList.N];
+            for (int i = 0; i < this.AdjacencyList.N; i++)
+                visited[i] = false;
+
+            // Call the recursive helper function
+            // to detect cycle in different DFS trees
+            for (int u = 0; u < this.AdjacencyList.N; u++)
+            {
+                // Don't recur for u if already visited
+                if (!visited[u])
+                    if (IsCyclicUtil(u, visited, -1))
+                        return true;
+            }
+            
+            return false;
         }
         #endregion
     }
