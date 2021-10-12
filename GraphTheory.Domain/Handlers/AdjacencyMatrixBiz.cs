@@ -640,6 +640,7 @@ namespace GraphTheory.Domain.Handlers
 
         private void NumberOfConnectedComponents()
         {
+            int count = 0;
             // Mark all the vertices as not visited
             bool[] visited = new bool[this.AdjacencyList.N];
             for (int v = 0; v < this.AdjacencyList.N; v++)
@@ -649,11 +650,16 @@ namespace GraphTheory.Domain.Handlers
             {
                 if (visited[v] == false)
                 {
+                    count++;
+                    Console.WriteLine($"Thanh phan lien thong thu {count}:");
                     DFSUtil(v, visited);
-
-                    Console.WriteLine("\n");
+                    Console.WriteLine();
                 }
             }
+
+            Console.WriteLine($"So thanh phan lien thong: {count}");
+
+            Console.WriteLine();
         }
 
         void DFSUtil(int v, bool[] visited)
