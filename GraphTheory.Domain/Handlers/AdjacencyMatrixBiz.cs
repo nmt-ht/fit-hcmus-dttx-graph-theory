@@ -3,6 +3,9 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using GraphTheory.Domain.Helper;
+using System.Collections.Generic;
+using System.Linq;
+using System.Collections;
 
 namespace GraphTheory.Domain.Handlers
 {
@@ -27,6 +30,7 @@ namespace GraphTheory.Domain.Handlers
         public int[] DegreeArray { get; set; }
         private int TotalOfDegrees { get; set; } = 0;
         private eExerciseNumber ExerciseNumber { get; set; }
+        private string VisitedVerties { get; set; } = string.Empty;
         public void SetParametter(eExerciseNumber exerciseNumber)
         {
             this.ExerciseNumber = exerciseNumber;
@@ -57,6 +61,14 @@ namespace GraphTheory.Domain.Handlers
             }
 
             PrintToScreen();
+
+            this.AdjacencyList = ConvertToAdjacencyList(this.AdjacencyMatrix);
+            Console.WriteLine();
+            Console.WriteLine(IsUndirectedGraph() ? UNDIRECTED_GRAPH : DIRECTED_GRAPH);
+            Console.WriteLine();
+
+            if (IsUndirectedGraph())
+                NumberOfConnectedComponents();
 
             switch (this.ExerciseNumber)
             {
@@ -478,10 +490,6 @@ namespace GraphTheory.Domain.Handlers
                     if (IsCyclicUtil(i, visited, v))
                         return true;
                 }
-
-                // If an adjacent is visited and
-                // not parent of current vertex,
-                // then there is a cycle.
                 else if (i != parent)
                     return true;
             }
@@ -494,13 +502,11 @@ namespace GraphTheory.Domain.Handlers
                 return false;
 
             this.AdjacencyList = ConvertToAdjacencyList(this.AdjacencyMatrix);
-            
+
             bool[] visited = new bool[this.AdjacencyList.N];
             for (int i = 0; i < this.AdjacencyList.N; i++)
                 visited[i] = false;
 
-            // Call the recursive helper function
-            // to detect cycle in different DFS trees
             for (int u = 0; u < this.AdjacencyList.N; u++)
             {
                 // Don't recur for u if already visited
@@ -508,9 +514,160 @@ namespace GraphTheory.Domain.Handlers
                     if (IsCyclicUtil(u, visited, -1))
                         return true;
             }
-            
+
             return false;
         }
+        #endregion
+
+        #region MyRegion
+        public void BFS(int s, int g)
+        {
+            bool[] visited = new bool[this.AdjacencyList.N];
+            int[] parent = new int[this.AdjacencyList.N];
+
+            this.VisitedVerties = string.Empty;
+            var startSnapshot = s;
+            for (int i = 0; i < this.AdjacencyList.N; i++)
+            {
+                parent[i] = -1;
+            }
+
+            //create queue for BFS
+            Queue<int> queue = new Queue<int>();
+            visited[s] = true;
+            queue.Enqueue(s);
+            //parent[s] = s;
+
+            //loop through all nodes in queue
+            while (queue.Count != 0 && s != g)
+            {
+                //Deque a vertex from queue
+                s = queue.Dequeue();
+                this.VisitedVerties += s + " ";
+
+                //Get all adjacent vertices of s
+                foreach (int next in AdjacencyList.AdjacentVertices[s])
+                {
+                    if (!visited[next])
+                    {
+                        visited[next] = true;
+                        queue.Enqueue(next);
+                        parent[next] = s;
+                    }
+                }
+            }
+
+            if (s == g)
+            {
+                Console.WriteLine("Danh sach dinh da duyet theo thu tu:");
+                Console.WriteLine(VisitedVerties.Substring(0, VisitedVerties.Length - 1));
+
+                var path = string.Empty;
+                while (parent[s] != -1)
+                {
+                    path += s + " <- ";
+                    s = parent[s];
+
+                    if (s == startSnapshot)
+                    {
+                        path += s;
+                        break;
+                    }
+                }
+
+                Console.WriteLine(!string.IsNullOrEmpty(path) ? "Duong di in kieu nguoc:\n" + path : "Khong co duong di.");
+                return;
+            }
+        }
+
+        int snapshotStart = 0;
+        bool isSnapshotStarted = false;
+        private void DFS(int start, int goal, bool[] visited, int[] parent)
+        {
+            visited[start] = true;
+            VisitedVerties += start + " ";
+
+            if(!isSnapshotStarted)
+            {
+                snapshotStart = start;
+                isSnapshotStarted = true;
+            }
+            
+            if (start == goal)
+            {
+                Console.WriteLine("Danh sach dinh da duyet theo thu tu:");
+                Console.WriteLine(VisitedVerties.Substring(0, VisitedVerties.Length - 1));
+
+                var path = string.Empty;
+                while (parent[start] != -1)
+                {
+                    path += start + " <- ";
+                    start = parent[start];
+
+                    if (start == snapshotStart)
+                    {
+                        path += snapshotStart;
+                        break;
+                    }
+                }
+
+                Console.WriteLine(!string.IsNullOrEmpty(path) ? "Duong di in kieu nguoc:\n" + path : "Khong co duong di.");
+                return;
+            }
+
+            foreach (int i in this.AdjacencyList.AdjacentVertices[start])
+            {
+                if (!visited[i])
+                {
+                    parent[i] = start;
+                    DFS(i, goal, visited, parent);
+                }
+            }
+        }
+
+        public void InitDFS(int start, int goal)
+        {
+            bool[] visited = new bool[AdjacencyList.N];
+            int[] parent = new int[this.AdjacencyList.N];
+
+            for (int i = 0; i < this.AdjacencyList.N; i++)
+            {
+                parent[i] = -1;
+            }
+
+            DFS(start, goal, visited, parent);
+        }
+
+        private void NumberOfConnectedComponents()
+        {
+            // Mark all the vertices as not visited
+            bool[] visited = new bool[this.AdjacencyList.N];
+            for (int v = 0; v < this.AdjacencyList.N; v++)
+                visited[v] = false;
+
+            for (int v = 0; v < this.AdjacencyList.N; v++)
+            {
+                if (visited[v] == false)
+                {
+                    DFSUtil(v, visited);
+
+                    Console.WriteLine("\n");
+                }
+            }
+        }
+
+        void DFSUtil(int v, bool[] visited)
+        {
+            visited[v] = true;
+            Console.Write(v + " ");
+
+            foreach (var n in  this.AdjacencyList.AdjacentVertices[v])
+            {
+                if (!visited[n])
+                    DFSUtil(n, visited);
+            }
+        }
+
         #endregion
     }
 }

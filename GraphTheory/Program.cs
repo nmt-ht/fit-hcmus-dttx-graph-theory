@@ -14,17 +14,66 @@ namespace graph_theory
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Exercise 1:");
+            #region BT01
+            //Console.WriteLine("Exercise 1:");
+            //AdjacencyMatrixBiz adjacencyMatrixBiz = new AdjacencyMatrixBiz();
+            //adjacencyMatrixBiz.SetParametter(eExerciseNumber.One);
+            //adjacencyMatrixBiz.AdjacencyMatrixHandling(ADJACENCY_MATRIX_FILE_PATH);
+            //Console.WriteLine();
+
+            //Console.WriteLine("Exercise 2:");
+            //AdjacencyMatrixBiz adjacencyMatrixBiz_2 = new AdjacencyMatrixBiz();
+            //adjacencyMatrixBiz_2.SetParametter(eExerciseNumber.Two);
+            //adjacencyMatrixBiz_2.AdjacencyMatrixHandling(ADJACENCY_MATRIX_FILE_PATH_2);
+            //Console.WriteLine();
+            #endregion
+
+            #region BT002
             AdjacencyMatrixBiz adjacencyMatrixBiz = new AdjacencyMatrixBiz();
-            adjacencyMatrixBiz.SetParametter(eExerciseNumber.One);
             adjacencyMatrixBiz.AdjacencyMatrixHandling(ADJACENCY_MATRIX_FILE_PATH);
+
+            int start;
+            int goal;
+            Console.WriteLine($"-----DFS-----");
+            Console.WriteLine($"Please input start:");
+            start =  int.Parse(Console.ReadLine().ToString());
+            if(start < 0)
+            {
+                Console.WriteLine($"Please enter start and it is greater/equal than 0:");
+                start = int.Parse(Console.ReadLine().ToString());
+            }
+            Console.WriteLine($"Please input goal:");
+            goal = int.Parse(Console.ReadLine().ToString());
+            if (goal < 0)
+            {
+                Console.WriteLine($"Please enter goal and it is greater/equal than 0:");
+                goal = int.Parse(Console.ReadLine().ToString());
+            }
+            
+            adjacencyMatrixBiz.InitDFS(start, goal);
+
             Console.WriteLine();
 
-            Console.WriteLine("Exercise 2:");
-            AdjacencyMatrixBiz adjacencyMatrixBiz_2 = new AdjacencyMatrixBiz();
-            adjacencyMatrixBiz_2.SetParametter(eExerciseNumber.Two);
-            adjacencyMatrixBiz_2.AdjacencyMatrixHandling(ADJACENCY_MATRIX_FILE_PATH_2);
+            Console.WriteLine($"-----BFS-----");
+            Console.WriteLine($"Please input start:");
+            start = int.Parse(Console.ReadLine().ToString());
+            if (start < 0)
+            {
+                Console.WriteLine($"Please enter start and it is greater/equal than 0:");
+                start = int.Parse(Console.ReadLine().ToString());
+            }
+            Console.WriteLine($"Please input goal:");
+            goal = int.Parse(Console.ReadLine().ToString());
+            if (goal < 0)
+            {
+                Console.WriteLine($"Please enter goal and it is greater/equal than 0:");
+                goal = int.Parse(Console.ReadLine().ToString());
+            }
+
+            adjacencyMatrixBiz.BFS(start, goal);
+
             Console.WriteLine();
+            #endregion
 
             #region Temporary, unusing codes
             //Console.WriteLine("Exercise 2:");
