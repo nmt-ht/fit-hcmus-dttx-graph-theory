@@ -587,12 +587,12 @@ namespace GraphTheory.Domain.Handlers
             visited[start] = true;
             VisitedVerties += start + " ";
 
-            if(!isSnapshotStarted)
+            if (!isSnapshotStarted)
             {
                 snapshotStart = start;
                 isSnapshotStarted = true;
             }
-            
+
             if (start == goal)
             {
                 Console.WriteLine("Danh sach dinh da duyet theo thu tu:");
@@ -641,6 +641,7 @@ namespace GraphTheory.Domain.Handlers
         private void NumberOfConnectedComponents()
         {
             int count = 0;
+            List<ConnectedComponent> componentItems = new List<ConnectedComponent>();
             // Mark all the vertices as not visited
             bool[] visited = new bool[this.AdjacencyList.N];
             for (int v = 0; v < this.AdjacencyList.N; v++)
@@ -651,26 +652,38 @@ namespace GraphTheory.Domain.Handlers
                 if (visited[v] == false)
                 {
                     count++;
-                    Console.WriteLine($"Thanh phan lien thong thu {count}:");
-                    DFSUtil(v, visited);
-                    Console.WriteLine();
+                    ConnectedComponent connectedComponent = new ConnectedComponent();
+                    DFSUtil(v, visited, connectedComponent);
+                    componentItems.Add(connectedComponent);
                 }
             }
 
             Console.WriteLine($"So thanh phan lien thong: {count}");
+            count = 0;
+            foreach (var item in componentItems)
+            { 
+                count++;
+                Console.WriteLine($"Thanh phan lien thong thu {count}:");
+                item.CompenentVertices.Sort();
+                var output = string.Empty;
+                foreach (var vertice in item.CompenentVertices)
+                    output += vertice + " ";
+
+                Console.WriteLine(output);
+            }
 
             Console.WriteLine();
         }
 
-        void DFSUtil(int v, bool[] visited)
+        void DFSUtil(int v, bool[] visited, ConnectedComponent connectedComponent)
         {
             visited[v] = true;
-            Console.Write(v + " ");
+            connectedComponent.CompenentVertices.Add(v);
 
-            foreach (var n in  this.AdjacencyList.AdjacentVertices[v])
+            foreach (var n in this.AdjacencyList.AdjacentVertices[v])
             {
                 if (!visited[n])
-                    DFSUtil(n, visited);
+                    DFSUtil(n, visited, connectedComponent);
             }
         }
 
@@ -695,10 +708,13 @@ public enum eTypeOfGraph
     [Description("Da do thi co huong")]
     MultiDirectedGraph = 5
 }
-
-
 public enum eExerciseNumber
 {
     One = 1,
     Two = 2
+}
+
+public class ConnectedComponent
+{
+   public List<int> CompenentVertices { get; set; } = new List<int>();
 }
